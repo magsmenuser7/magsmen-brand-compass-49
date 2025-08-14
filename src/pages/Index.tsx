@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,6 +6,8 @@ import { AuditWizard } from "@/components/AuditWizard";
 import { ResultsPage } from "@/components/ResultsPage";
 import { WebsiteAnalyzer } from "@/components/WebsiteAnalyzer";
 import { CheckCircle, Star, TrendingUp, Target, Shield, Zap, BarChart3, Users, Award } from 'lucide-react';
+import logo from '../assets/magsmen-new-version.png';
+
 
 interface AuditData {
   website: string;
@@ -43,9 +46,9 @@ const Index = () => {
       {/* Header with Logo */}
       <header className="w-full py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <div className="max-w-7xl mx-auto">
-          <img 
-            src="./src/assets/magsmen-new-version.png"
-            alt="magsmen-new-version" 
+          <img
+            src={logo}
+            alt="Magsmen Brand Consultants"
             className="h-8 sm:h-10 md:h-12 w-auto mt-5"
           />
         </div>
