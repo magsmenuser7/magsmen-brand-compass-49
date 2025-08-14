@@ -44,7 +44,7 @@ const Index = () => {
       <header className="w-full py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <div className="max-w-7xl mx-auto">
           <img 
-            src="./src/assets/magsmen-new-version.png" 
+            src="src/assets/magsmen-new-version.png"
             alt="magsmen-new-version" 
             className="h-8 sm:h-10 md:h-12 w-auto mt-5"
           />
