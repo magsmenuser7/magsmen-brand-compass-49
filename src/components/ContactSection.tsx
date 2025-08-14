@@ -45,13 +45,13 @@ export const ContactSection = ({ auditScore, recommendation, onStartOver }: Cont
     
     switch (method) {
       case 'phone':
-        window.open('tel:+1234567890', '_blank');
+        window.open('tel:+91 9044910449', '_blank');
         break;
       case 'whatsapp':
-        window.open(`https://wa.me/1234567890?text=${message}`, '_blank');
+        window.open(`https://wa.me/9044910449?text=${message}`, '_blank');
         break;
       case 'email':
-        window.open(`mailto:hello@magsmen.com?subject=Brand Audit Follow-up - ${auditScore}% Score&body=${message}`, '_blank');
+        window.open(`mailto:connect@magsmen.com?subject=Brand Audit Follow-up - ${auditScore}% Score&body=${message}`, '_blank');
         break;
       default:
         break;

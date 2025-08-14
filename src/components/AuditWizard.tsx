@@ -9,6 +9,9 @@ import { Progress } from "@/components/ui/progress";
 import { CheckCircle, Globe, Palette, MessageCircle, Target, DollarSign, Smartphone, ArrowRight, ArrowLeft } from 'lucide-react';
 
 interface AuditData {
+  name: string;
+  email: string;
+  contact: string;
   website: string;
   businessType: string;
   currentBrand: string;
@@ -37,6 +40,9 @@ const steps = [
 export const AuditWizard = ({ onComplete, onAnalyzeWebsite }: AuditWizardProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [auditData, setAuditData] = useState<AuditData>({
+    name: '',
+    email: '',
+    contact: '',
     website: '',
     businessType: '',
     currentBrand: '',
@@ -48,12 +54,44 @@ export const AuditWizard = ({ onComplete, onAnalyzeWebsite }: AuditWizardProps) 
     additionalInfo: ''
   });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const updateAuditData = (field: keyof AuditData, value: any) => {
     setAuditData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const validateCurrentStep = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (currentStep === 0) { // Basic Information step
+      if (!auditData.name.trim()) {
+        newErrors.name = 'Name is required';
+      }
+      if (!auditData.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(auditData.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+      if (!auditData.contact.trim()) {
+        newErrors.contact = 'Contact number is required';
+      } else if (!/^[\+]?[1-9][\d]{0,15}$/.test(auditData.contact.replace(/[\s\-\(\)]/g, ''))) {
+        newErrors.contact = 'Please enter a valid contact number';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
+    if (!validateCurrentStep()) {
+      return;
+    }
+    
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
@@ -115,25 +153,54 @@ export const AuditWizard = ({ onComplete, onAnalyzeWebsite }: AuditWizardProps) 
             
             <div className="space-y-4">
               <div>
+                <Label htmlFor="name">Name *</Label>
+                <Input
+                  id="name"
+                  placeholder="Your full name"
+                  value={auditData.name}
+                  onChange={(e) => updateAuditData('name', e.target.value)}
+                  required
+                  className={errors.name ? 'border-red-500' : ''}
+                />
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={auditData.email}
+                  onChange={(e) => updateAuditData('email', e.target.value)}
+                  required
+                  className={errors.email ? 'border-red-500' : ''}
+                />
+                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="contact">Contact Number *</Label>
+                <Input
+                  id="contact"
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  value={auditData.contact}
+                  onChange={(e) => updateAuditData('contact', e.target.value)}
+                  required
+                  className={errors.contact ? 'border-red-500' : ''}
+                />
+                {errors.contact && <p className="text-sm text-red-500 mt-1">{errors.contact}</p>}
+              </div>
+
+              <div>
                 <Label htmlFor="website">Website URL (optional)</Label>
-                <div className="flex gap-2 mt-1">
-                  <Input
-                    id="website"
-                    placeholder="https://yourwebsite.com"
-                    value={auditData.website}
-                    onChange={(e) => updateAuditData('website', e.target.value)}
-                  />
-                  <Button 
-                    onClick={handleWebsiteAnalysis}
-                    disabled={!auditData.website || isAnalyzing}
-                    variant="outline"
-                  >
-                    {isAnalyzing ? 'Analyzing...' : 'Analyze'}
-                  </Button>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  We'll analyze your website to pre-fill some answers
-                </p>
+                <Input
+                  id="website"
+                  placeholder="https://yourwebsite.com"
+                  value={auditData.website}
+                  onChange={(e) => updateAuditData('website', e.target.value)}
+                />
               </div>
 
               <div>
@@ -273,20 +340,20 @@ export const AuditWizard = ({ onComplete, onAnalyzeWebsite }: AuditWizardProps) 
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="0-1000" id="budget-1" />
-                  <Label htmlFor="budget-1">$0 - $1,000</Label>
+                  <Label htmlFor="budget-1">$0 - $1,00,000</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="1000-5000" id="budget-2" />
-                  <Label htmlFor="budget-2">$1,000 - $5,000</Label>
+                  <Label htmlFor="budget-2">$1,00,000 - $5,00,000</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="5000-10000" id="budget-3" />
-                  <Label htmlFor="budget-3">$5,000 - $10,000</Label>
+                  <Label htmlFor="budget-3">less than $10,00,000</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <RadioGroupItem value="10000+" id="budget-4" />
                   <Label htmlFor="budget-4">$10,000+</Label>
-                </div>
+                </div> */}
               </RadioGroup>
             </div>
           </div>

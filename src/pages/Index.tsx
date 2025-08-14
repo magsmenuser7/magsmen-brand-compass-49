@@ -40,8 +40,19 @@ const Index = () => {
 
   const renderLandingPage = () => (
     <div className="min-h-screen bg-gradient-subtle">
+      {/* Header with Logo */}
+      <header className="w-full py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto">
+          <img 
+            src="src/assets/magsmen-new-version.png" 
+            alt="Magsmen Brand Consultants" 
+            className="h-8 sm:h-10 md:h-12 w-auto mt-5"
+          />
+        </div>
+      </header>
+      
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
         <div className="text-center max-w-4xl mx-auto">
           <div className="mb-8 animate-fade-in">
             <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
