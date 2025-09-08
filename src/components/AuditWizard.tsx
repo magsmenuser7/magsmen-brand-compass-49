@@ -7,6 +7,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, Globe, Palette, MessageCircle, Target, DollarSign, Smartphone, ArrowRight, ArrowLeft } from 'lucide-react';
+import emailjs from "@emailjs/browser";
+
 
 interface AuditData {
   name: string;
@@ -123,17 +125,69 @@ export const AuditWizard = ({ onComplete, onAnalyzeWebsite }: AuditWizardProps) 
     }
   };
 
-  const calculateScore = () => {
-    const designScore = auditData.designQuality * 20;
-    const communicationScore = auditData.communicationClarity * 20;
-    const strategyScore = auditData.strategyAlignment * 20;
-    const budgetScore = auditData.marketingBudget ? 20 : 0;
-    const platformScore = auditData.platformsUsed.length > 0 ? 20 : 0;
+  // const calculateScore = () => {
+  //   const designScore = auditData.designQuality * 20;
+  //   const communicationScore = auditData.communicationClarity * 20;
+  //   const strategyScore = auditData.strategyAlignment * 20;
+  //   const budgetScore = auditData.marketingBudget ? 20 : 0;
+  //   const platformScore = auditData.platformsUsed.length > 0 ? 20 : 0;
     
-    const totalScore = (designScore + communicationScore + strategyScore + budgetScore + platformScore) / 5;
+  //   const totalScore = (designScore + communicationScore + strategyScore + budgetScore + platformScore) / 5;
     
-    onComplete({ ...auditData, score: Math.round(totalScore) });
-  };
+  //   onComplete({ ...auditData, score: Math.round(totalScore) });
+  // };
+
+
+
+
+  // inside your calculateScore function:
+const calculateScore = () => {
+  debugger;
+  const designScore = auditData.designQuality * 20;
+  const communicationScore = auditData.communicationClarity * 20;
+  const strategyScore = auditData.strategyAlignment * 20;
+  const budgetScore = auditData.marketingBudget ? 20 : 0;
+  const platformScore = auditData.platformsUsed.length > 0 ? 20 : 0;
+
+  const totalScore = (designScore + communicationScore + strategyScore + budgetScore + platformScore) / 5;
+  const finalData = { ...auditData, score: Math.round(totalScore) };
+
+  // ---- EMAILJS Integration ----
+    emailjs.send(
+      "service_inugbpo",
+      "template_38ycg6y",
+     {
+        name: finalData.name,
+        email: finalData.email,
+        contact: finalData.contact,
+        website: finalData.website,
+        businessType: finalData.businessType,
+        currentBrand: finalData.currentBrand,
+        designQuality: finalData.designQuality,
+        communicationClarity: finalData.communicationClarity,
+        strategyAlignment: finalData.strategyAlignment,
+        marketingBudget: finalData.marketingBudget,
+        platformsUsed: finalData.platformsUsed.join(", "),
+        additionalInfo: finalData.additionalInfo,
+        score: finalData.score,
+      },
+      "ayB1ovewIh1u5ekdN"
+    )
+    .then(
+      (response) => {
+        console.log("SUCCESS!", response.status, response.text);
+        alert("Assessment submitted successfully via email!");
+      },
+      (err) => {
+        console.error("FAILED...", err);
+        alert("Failed to send email. Please try again.");
+      }
+    );
+
+  // Call parent onComplete if needed
+  onComplete(finalData);
+};
+
 
   const progress = ((currentStep + 1) / steps.length) * 100;
 
